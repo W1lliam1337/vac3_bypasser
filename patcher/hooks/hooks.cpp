@@ -21,8 +21,8 @@ void hooks::init( ) {
 	static const auto crc_service_module = static_cast< void* >( utils::sig( ctx::m_steam_image, "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 8B" ) );
 	HOOK( crc_service_module, hk_crc_service_module, og::m_crc_service_module );
 
-	static const auto ipc_client_detecter = static_cast< void* >( utils::sig( ctx::m_steam_image, "55 8B EC 83 EC 0C 53 56 8B 75 08 8B" ) );
-	HOOK( ipc_client_detecter, hk_ipc_client_detecter, og::m_ipc_client_detecter );
+	//static const auto ipc_client_detecter = static_cast< void* >( utils::sig( ctx::m_steam_image, "55 8B EC 83 EC 0C 53 56 8B 75 08 8B" ) );
+	//HOOK( ipc_client_detecter, hk_ipc_client_detecter, og::m_ipc_client_detecter );
 
 	//HOOK_API( L"kernel32.dll", "CreateFileMappingA", hk_create_file_mapping, og::m_create_file_mapping );
 	HOOK( CreateFileMappingA, hk_create_file_mapping, og::m_create_file_mapping );
@@ -63,9 +63,9 @@ int __fastcall hooks::hk_some_status_checks( registers,
 	static const auto condition = static_cast< void* >( utils::sig( ctx::m_steam_image, "0F 84 ? ? ? ? B9 ? ? ? ? 8B 06" ) );
 
 	// patch crc hash checks.
-	//if ( _ReturnAddress( ) == condition ) {
-	//	return 1;
-	//}
+	if ( _ReturnAddress( ) == condition ) {
+		return 1;
+	}
 
 	//mode &= ~3;
 	if ( last_result != e_last_status::succes && last_result != 2 )
@@ -105,6 +105,13 @@ bool __stdcall hooks::hk_load_vac( c_module* Src, char mode ) {
 		return true;
 	};
 
+	// @ida: E8 ?? ?? ?? ?? 83 C4 08 85 C0 74 19 56
+	// return success if module is invalid.
+	if ( !is_valid_module( Src ) ) {
+		Src->m_last_result = e_last_status::succes;
+		return 1;
+	}
+
 	// unload vac module
 	const auto raw = Src->m_raw;
 	FreeLibrary( Src->m_module );
@@ -114,13 +121,6 @@ bool __stdcall hooks::hk_load_vac( c_module* Src, char mode ) {
 	Src->m_last_result = e_last_status::succes;
 
 	printf( "[ hook ] VAC module was successfully unloaded\n" );;
-
-	// @ida: E8 ?? ?? ?? ?? 83 C4 08 85 C0 74 19 56
-	// return success if module is invalid.
-	if ( !is_valid_module( Src ) ) {
-		Src->m_last_result = e_last_status::succes;
-		return 1;
-	}
 
 	return 1;
 }
