@@ -14,7 +14,7 @@ If you're looking for a way to bypass VAC without risking your game account, VAC
 
 # 👉 FAQ
 - This program is only x86 compatible.
-- Some of usage of this program is undocumented and you'll have to go through the codebase to figure out how different things work.
+- Some code of this program is undocumented and you'll have to go through the VAC codebase to figure out how different things work.
 
 # 👉 How to use: 
 - Put the dll and the injector into the same folder and run the injector, run the game, you're done!
