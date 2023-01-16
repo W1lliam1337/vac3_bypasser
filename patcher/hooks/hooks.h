@@ -32,7 +32,7 @@ private:
 };
 
 enum e_last_status : int {
-	succes = 1,
+	OK = 1,
 };
 
 namespace hooks {

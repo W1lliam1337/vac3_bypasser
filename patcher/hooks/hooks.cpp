@@ -68,8 +68,8 @@ int __fastcall hooks::hk_some_status_checks( registers,
 	}
 
 	//mode &= ~3;
-	if ( last_result != e_last_status::succes && last_result != 2 )
-		last_result = e_last_status::succes;
+	if ( last_result != e_last_status::OK && last_result != 2 )
+		last_result = e_last_status::OK;
 
 	printf( "[ hook ] patched status: %d\n", last_result );
 	return last_result;
@@ -108,7 +108,7 @@ bool __stdcall hooks::hk_load_vac( c_module* Src, char mode ) {
 	// @ida: E8 ?? ?? ?? ?? 83 C4 08 85 C0 74 19 56
 	// return success if module is invalid.
 	if ( !is_valid_module( Src ) ) {
-		Src->m_last_result = e_last_status::succes;
+		Src->m_last_result = e_last_status::OK;
 		return 1;
 	}
 
@@ -118,7 +118,7 @@ bool __stdcall hooks::hk_load_vac( c_module* Src, char mode ) {
 	Src->m_runfunc = nullptr;
 	Src->m_raw = -1;
 	Src->m_module_size = -1;
-	Src->m_last_result = e_last_status::succes;
+	Src->m_last_result = e_last_status::OK;
 
 	printf( "[ hook ] VAC module was successfully unloaded\n" );;
 
